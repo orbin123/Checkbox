@@ -2,7 +2,9 @@
 
 A minimal, distraction-free desktop app for tracking progress across playlists, courses, and learning sprints — built with Electron, React, and Zustand.
 
-![Checkbox](checkbox-app/public/favicon.svg)
+<img width="1075" height="728" alt="Screenshot 2026-03-25 at 7 04 32 PM" src="https://github.com/user-attachments/assets/2fbc74d2-8e20-43c8-a529-82a44953c437" />
+
+
 
 ## Features
 
