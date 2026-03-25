@@ -442,10 +442,33 @@
    ======================================== */
 .table-actions {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px solid var(--border);
+}
+
+.checkbox-count-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.action-btn.count-btn {
+  padding: 6px 10px;
+  min-width: 36px;
+  justify-content: center;
+}
+
+.action-btn.count-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.action-btn.count-btn:disabled:hover {
+  border-color: var(--border);
+  color: var(--text-secondary);
 }
 
 .action-btn {

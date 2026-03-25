@@ -155,6 +155,48 @@ const useStore = create((set, get) => ({
     get().persist();
   },
 
+  incrementTableCheckboxes: (tabId, tableId) => {
+    set((state) => ({
+      tabs: state.tabs.map((tab) =>
+        tab.id === tabId
+          ? {
+              ...tab,
+              tables: tab.tables.map((t) => {
+                if (t.id !== tableId || t.total >= 200) return t;
+                return {
+                  ...t,
+                  total: t.total + 1,
+                  checked: [...t.checked, false],
+                };
+              }),
+            }
+          : tab
+      ),
+    }));
+    get().persist();
+  },
+
+  decrementTableCheckboxes: (tabId, tableId) => {
+    set((state) => ({
+      tabs: state.tabs.map((tab) =>
+        tab.id === tabId
+          ? {
+              ...tab,
+              tables: tab.tables.map((t) => {
+                if (t.id !== tableId || t.total <= 1) return t;
+                return {
+                  ...t,
+                  total: t.total - 1,
+                  checked: t.checked.slice(0, -1),
+                };
+              }),
+            }
+          : tab
+      ),
+    }));
+    get().persist();
+  },
+
   toggleCheckbox: (tabId, tableId, index) => {
     set((state) => ({
       tabs: state.tabs.map((tab) =>

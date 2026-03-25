@@ -51,7 +51,7 @@ function App() {
       <main className="workspace">
         <div className="workspace-header">
           <div>
-            <h1 className="workspace-title">Workspaces</h1>
+            <h1 className="workspace-title">{activeTab.name}</h1>
             <p className="workspace-desc">
               Track your progress across digital playlists and courses.
             </p>

@@ -3,7 +3,7 @@ import useStore from '../store/store';
 import ProgressBar from './ProgressBar';
 import CheckboxGrid from './CheckboxGrid';
 import ConfirmDialog from './ConfirmDialog';
-import { RotateCcw, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { RotateCcw, Trash2, ChevronDown, ChevronUp, Minus, Plus } from 'lucide-react';
 
 // Compute smart preview window centered around the progress frontier
 function getPreviewRange(checked, total) {
@@ -50,7 +50,13 @@ function getPreviewRange(checked, total) {
 }
 
 export default function TableCard({ tabId, table }) {
-  const { deleteTable, resetTable, renameTable } = useStore();
+  const {
+    deleteTable,
+    resetTable,
+    renameTable,
+    incrementTableCheckboxes,
+    decrementTableCheckboxes,
+  } = useStore();
   const [expanded, setExpanded] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
@@ -150,6 +156,28 @@ export default function TableCard({ tabId, table }) {
         )}
 
         <div className="table-actions">
+          <div className="checkbox-count-actions">
+            <button
+              type="button"
+              className="action-btn count-btn"
+              onClick={() => decrementTableCheckboxes(tabId, table.id)}
+              disabled={table.total <= 1}
+              title="Remove one checkbox"
+              aria-label="Remove one checkbox"
+            >
+              <Minus size={14} />
+            </button>
+            <button
+              type="button"
+              className="action-btn count-btn"
+              onClick={() => incrementTableCheckboxes(tabId, table.id)}
+              disabled={table.total >= 200}
+              title="Add one checkbox"
+              aria-label="Add one checkbox"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
           <button
             className="action-btn reset-btn"
             onClick={() => resetTable(tabId, table.id)}
