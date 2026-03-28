@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import useStore from '../store/store';
-import { Plus, X } from 'lucide-react';
+import { Clock3, Plus, Target, X } from 'lucide-react';
 import ConfirmDialog from './ConfirmDialog';
 
-export default function TabBar() {
+export default function TabBar({ activeView, onChangeView }) {
   const { tabs, activeTabId, setActiveTab, addTab, removeTab, renameTab } =
     useStore();
   const [isAdding, setIsAdding] = useState(false);
@@ -15,6 +15,7 @@ export default function TabBar() {
   const handleAddTab = () => {
     if (newTabName.trim()) {
       addTab(newTabName.trim());
+      onChangeView('workspace');
       setNewTabName('');
       setIsAdding(false);
     }
@@ -54,68 +55,92 @@ export default function TabBar() {
   return (
     <>
       <div className="tab-bar">
-        <div className="tab-list">
-          {tabs.map((tab) => (
-            <div key={tab.id} className="tab-wrapper">
-              {editingTabId === tab.id ? (
+        <div className="tab-bar-inner">
+          <div className="tab-list">
+            {tabs.map((tab) => (
+              <div key={tab.id} className="tab-wrapper">
+                {editingTabId === tab.id ? (
+                  <input
+                    type="text"
+                    className="tab-rename-input"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    onKeyDown={handleRenameKeyDown}
+                    onBlur={finishRename}
+                    autoFocus
+                  />
+                ) : (
+                  <button
+                    className={`tab ${tab.id === activeTabId && activeView === 'workspace' ? 'tab-active' : ''}`}
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      onChangeView('workspace');
+                    }}
+                    onDoubleClick={() => startRename(tab)}
+                    title="Double-click to rename"
+                  >
+                    <span className="tab-name">{tab.name}</span>
+                    <span
+                      className="tab-close"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteTabId(tab.id);
+                      }}
+                    >
+                      <X size={12} />
+                    </span>
+                  </button>
+                )}
+              </div>
+            ))}
+
+            {isAdding ? (
+              <div className="tab-input-wrapper">
                 <input
                   type="text"
-                  className="tab-rename-input"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  onKeyDown={handleRenameKeyDown}
-                  onBlur={finishRename}
+                  className="tab-input"
+                  placeholder="Tab name..."
+                  value={newTabName}
+                  onChange={(e) => setNewTabName(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onBlur={() => {
+                    if (!newTabName.trim()) {
+                      setIsAdding(false);
+                      setNewTabName('');
+                    }
+                  }}
                   autoFocus
                 />
-              ) : (
-                <button
-                  className={`tab ${tab.id === activeTabId ? 'tab-active' : ''}`}
-                  onClick={() => setActiveTab(tab.id)}
-                  onDoubleClick={() => startRename(tab)}
-                  title="Double-click to rename"
-                >
-                  <span className="tab-name">{tab.name}</span>
-                  <span
-                    className="tab-close"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleteTabId(tab.id);
-                    }}
-                  >
-                    <X size={12} />
-                  </span>
-                </button>
-              )}
-            </div>
-          ))}
+              </div>
+            ) : (
+              <button
+                className="tab tab-add"
+                onClick={() => setIsAdding(true)}
+                title="Add new tab"
+              >
+                <Plus size={16} />
+              </button>
+            )}
+          </div>
 
-          {isAdding ? (
-            <div className="tab-input-wrapper">
-              <input
-                type="text"
-                className="tab-input"
-                placeholder="Tab name..."
-                value={newTabName}
-                onChange={(e) => setNewTabName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onBlur={() => {
-                  if (!newTabName.trim()) {
-                    setIsAdding(false);
-                    setNewTabName('');
-                  }
-                }}
-                autoFocus
-              />
-            </div>
-          ) : (
+          <div className="tab-view-actions">
             <button
-              className="tab tab-add"
-              onClick={() => setIsAdding(true)}
-              title="Add new tab"
+              className={`tab tab-view-btn ${activeView === 'timer' ? 'tab-active' : ''}`}
+              onClick={() => onChangeView('timer')}
+              title="Open timer"
             >
-              <Plus size={16} />
+              <Clock3 size={16} />
+              <span>Timer</span>
             </button>
-          )}
+            <button
+              className={`tab tab-view-btn ${activeView === 'goals' ? 'tab-active' : ''}`}
+              onClick={() => onChangeView('goals')}
+              title="Open goals"
+            >
+              <Target size={16} />
+              <span>Goals</span>
+            </button>
+          </div>
         </div>
       </div>
 
